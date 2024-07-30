@@ -24,3 +24,4 @@ export function useFingerprint() {
 
   return fingerprint;
 }
+

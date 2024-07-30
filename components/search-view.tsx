@@ -30,8 +30,8 @@ export type SearchResult = {
 };
 
 export type SearchResults = {
-  trieveResults: SearchResult[];
-  algoliaResults: SearchResult[];
+  search1: SearchResult[];
+  search2: SearchResult[];
 };
 
 const SearchResultItem: React.FC<{ result: SearchResult }> = ({ result }) => (
@@ -71,7 +71,8 @@ const SearchResultItem: React.FC<{ result: SearchResult }> = ({ result }) => (
 
 function HNSearchComparisonView() {
   const [searchTerm, setSearchTerm] = useQueryState("q", { defaultValue: "" });
-  const [isTrieveA] = useState<boolean>(Math.random() < 0.5);
+  const [isTrieveA, setIsTrieveA] = useState<boolean>(Math.random() < 0.5);
+  const [results, setSearchResults] = useState<SearchResults | null>(null);
   const [logState, logAction] = useFormState<LogState, FormData>(
     logPreference,
     {
@@ -85,7 +86,6 @@ function HNSearchComparisonView() {
   });
   const fingerprint = useFingerprint();
   const [submittedQueries, setSubmittedQueries] = useState<string[]>([]);
-  const [isQueryAllowed, setIsQueryAllowed] = useState<boolean>(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -117,25 +117,17 @@ function HNSearchComparisonView() {
     setLocalLogState({ message: "", success: false });
   }, [searchTerm]);
 
+
   useEffect(() => {
-    if (searchTerm && !queries.includes(searchTerm)) {
-      setIsQueryAllowed(false);
-    } else {
-      setIsQueryAllowed(true);
+    async function fetchData() {
+      let results = await searchBoth(searchTerm)
+      setSearchResults({
+        search1: isTrieveA ? results.search1 : results.search2,
+        search2: isTrieveA ? results.search2 : results.search1,
+      })
     }
-  }, [searchTerm]);
-
-  const { data, error, isError, isPlaceholderData } = useQuery<SearchResults>({
-    queryKey: ["search", searchTerm],
-    queryFn: () => searchBoth(searchTerm),
-    enabled: !!searchTerm && isQueryAllowed,
-    placeholderData: keepPreviousData,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
-
-  const resultsA = isTrieveA ? data?.trieveResults : data?.algoliaResults;
-  const resultsB = isTrieveA ? data?.algoliaResults : data?.trieveResults;
+    fetchData();
+  }, [searchTerm, isTrieveA]);
 
   const handlePreferenceSubmit = (formData: FormData) => {
     logAction(formData);
@@ -188,18 +180,12 @@ function HNSearchComparisonView() {
         {searchTerm && searchTerm !== "all_voted" && (
           <PreferenceForm
             handlePreferenceSubmit={handlePreferenceSubmit}
-            resultA={renderResults(resultsA)}
-            resultB={renderResults(resultsB)}
+            resultA={renderResults(results?.search1)}
+            resultB={renderResults(results?.search2)}
             searchTerm={searchTerm}
             logState={localLogState}
             isTrieveA={isTrieveA}
-            isQueryAllowed={isQueryAllowed}
           />
-        )}
-        {isError && (
-          <div className="text-center text-red-500">
-            An error occurred: {error instanceof Error ? error.message : "Unknown error"}
-          </div>
         )}
       </div>
     </div>

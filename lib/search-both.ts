@@ -1,7 +1,7 @@
 
 import { SearchResults, SearchResult } from "@/components/search-view";
 
-const USE_DUMMY_TRIEVE_DATA = true;
+const USE_DUMMY_TRIEVE_DATA = false;
 
 export const searchBoth = async (query: string): Promise<SearchResults> => {
   const algoliaResponse = await fetch(
@@ -51,7 +51,7 @@ export const searchBoth = async (query: string): Promise<SearchResults> => {
         headers: {
           "Content-Type": "application/json",
           Authorization: "tr-IeuEU6Ni7JmT73eynHMjcaRXiNsjosBl",
-          "tr-dataset": "b96b60eb-cfd1-42c4-9320-78ebef592cfd",
+          "tr-dataset": "4284298b-bb52-4061-ba44-cd268c571a75",
           "x-api-version": "V2",
         },
         body: JSON.stringify({
@@ -92,5 +92,5 @@ export const searchBoth = async (query: string): Promise<SearchResults> => {
     }));
   }
 
-  return { trieveResults, algoliaResults };
+  return { search1: trieveResults, search2: algoliaResults };
 };

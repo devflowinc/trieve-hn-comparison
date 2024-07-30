@@ -13,7 +13,6 @@ interface PreferenceFormProps {
   searchTerm: string;
   logState: LogState;
   isTrieveA: boolean;
-  isQueryAllowed: boolean;
   resultA: React.ReactNode;
   resultB: React.ReactNode;
 }
@@ -27,15 +26,13 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
   searchTerm,
   logState,
   isTrieveA,
-  isQueryAllowed,
   resultA,
   resultB,
 }) => {
   const fingerprint = useFingerprint();
   const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const router = useRouter();
-
+  
   useEffect(() => {
     if (fingerprint && searchTerm) {
       const votedQueries: VotedQueries = JSON.parse(
@@ -46,7 +43,7 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
   }, [fingerprint, searchTerm]);
 
   const onVote = (preference: Preference) => {
-    if (hasVoted || !searchTerm || !fingerprint || !isQueryAllowed) return;
+    if (hasVoted || !searchTerm || !fingerprint) return;
 
     setIsSubmitting(true);
 
@@ -82,47 +79,12 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
     }
   }, [logState]);
 
-  if (!isQueryAllowed) {
-    return (
-      <div className="text-center">
-        <p className="text-red-500 mb-4">
-          This query is not in the allowed set.
-        </p>
-        <NewQueryButton />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col space-y-4">
       <h2 className="text-lg font-semibold text-center mb-4">
         Which search response do you prefer? Choose a result or use the buttons
         below to vote and try another query.
       </h2>
-      {/* <div className="text-center space-x-4 mt-4">
-        <Button
-          onClick={() => onVote("A")}
-          disabled={hasVoted || isSubmitting}
-          className={`px-4 bg-[#ff6600] py-2 border border-[#ff6600] text-white hover:bg-[#ff8533] transition-colors duration-200 rounded ${
-            hasVoted || isSubmitting
-              ? "opacity-50 cursor-not-allowed"
-              : "cursor-pointer"
-          }`}
-        >
-          A is better
-        </Button>
-        <Button
-          onClick={() => onVote("B")}
-          disabled={hasVoted || isSubmitting}
-          className={`px-4 bg-[#ff6600] py-2 border border-[#ff6600] text-white hover:bg-[#ff8533] transition-colors duration-200 rounded ${
-            hasVoted || isSubmitting
-              ? "opacity-50 cursor-not-allowed"
-              : "cursor-pointer"
-          }`}
-        >
-          B is better
-        </Button>
-      </div> */}
       <div className="flex justify-center mt-4">
         <div className="inline-flex rounded overflow-hidden">
           <button
