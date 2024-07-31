@@ -117,6 +117,10 @@ function HNSearchComparisonView() {
     setLocalLogState({ message: "", success: false });
   }, [searchTerm]);
 
+  useEffect(() => {
+      setIsTrieveA(Math.random() < 0.5);
+  }, [searchTerm]);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -140,6 +144,23 @@ function HNSearchComparisonView() {
       localStorage.setItem("votedQueries", JSON.stringify(votedQueries));
       setSubmittedQueries(updatedQueries);
       setIsTrieveA(Math.random() < 0.5);
+      setTimeout(() => {
+        router.push(`?q=${randomQuery}`);
+      }, 700);
+    } else {
+      setSearchTerm("all_voted");
+    }
+  };
+
+  const skipQuery = () => {
+    const availableQueries = queries.filter(q => !submittedQueries.includes(q));
+    if (availableQueries.length > 0) {
+      const randomQuery = availableQueries[Math.floor(Math.random() * availableQueries.length)];
+      const updatedQueries = [...submittedQueries, searchTerm];
+      const votedQueries = JSON.parse(localStorage.getItem("votedQueries") || "{}");
+      votedQueries[fingerprint] = updatedQueries;
+      localStorage.setItem("votedQueries", JSON.stringify(votedQueries));
+      setSubmittedQueries(updatedQueries);
       setTimeout(() => {
         router.push(`?q=${randomQuery}`);
       }, 700);
@@ -184,6 +205,7 @@ function HNSearchComparisonView() {
             resultA={renderResults(results?.search1)}
             resultB={renderResults(results?.search2)}
             searchTerm={searchTerm}
+            skipQuery={skipQuery}
             logState={localLogState}
             isTrieveA={isTrieveA}
           />

@@ -13,6 +13,7 @@ interface PreferenceFormProps {
   searchTerm: string;
   logState: LogState;
   isTrieveA: boolean;
+  skipQuery: () => void;
   resultA: React.ReactNode;
   resultB: React.ReactNode;
 }
@@ -26,6 +27,7 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
   searchTerm,
   logState,
   isTrieveA,
+  skipQuery,
   resultA,
   resultB,
 }) => {
@@ -109,6 +111,18 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
             }`}
           >
             B is better
+          </button>
+          <div className="w-px bg-white"></div>
+          <button
+            onClick={() => skipQuery()}
+            disabled={hasVoted || isSubmitting}
+            className={`px-4 py-2 bg-[#ff6600] text-white hover:bg-[#ff8533] transition-colors duration-200 ${
+              hasVoted || isSubmitting
+                ? "opacity-50 cursor-not-allowed"
+                : "cursor-pointer"
+            }`}
+          >
+            Skip Query
           </button>
         </div>
       </div>
