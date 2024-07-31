@@ -139,6 +139,7 @@ function HNSearchComparisonView() {
       votedQueries[fingerprint] = updatedQueries;
       localStorage.setItem("votedQueries", JSON.stringify(votedQueries));
       setSubmittedQueries(updatedQueries);
+      setIsTrieveA(Math.random() < 0.5);
       setTimeout(() => {
         router.push(`?q=${randomQuery}`);
       }, 700);
