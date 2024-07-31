@@ -14,6 +14,7 @@ interface PreferenceFormProps {
   logState: LogState;
   isTrieveA: boolean;
   skipQuery: () => void;
+  loading: boolean;
   resultA: React.ReactNode;
   resultB: React.ReactNode;
 }
@@ -28,6 +29,7 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
   logState,
   isTrieveA,
   skipQuery,
+  loading,
   resultA,
   resultB,
 }) => {
@@ -81,6 +83,7 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
     }
   }, [logState]);
 
+
   return (
     <div className="flex flex-col space-y-4">
       <h2 className="text-lg font-semibold text-center mb-4">
@@ -133,7 +136,7 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
             hasVoted
               ? "opacity-50 cursor-not-allowed"
               : "hover:border-blue-500 hover:shadow-lg"
-          }`}
+          }  ${loading ? "cursor-wait animate-pulsing" : ""}`}
           onClick={() => !hasVoted && onVote("A")}
         >
           <h3 className="text-lg font-semibold mb-2">Results A</h3>
@@ -144,7 +147,7 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
             hasVoted
               ? "opacity-50 cursor-not-allowed"
               : "hover:border-blue-500 hover:shadow-lg"
-          }`}
+          }  ${loading ? "cursor-wait animate-pulsing" : ""}`}
           onClick={() => !hasVoted && onVote("B")}
         >
           <h3 className="text-lg font-semibold mb-2">Results B</h3>

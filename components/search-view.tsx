@@ -86,6 +86,7 @@ function HNSearchComparisonView() {
   });
   const fingerprint = useFingerprint();
   const [submittedQueries, setSubmittedQueries] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -124,11 +125,13 @@ function HNSearchComparisonView() {
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
       let results = await searchBoth(searchTerm)
       setSearchResults({
         search1: isTrieveA ? results.search1 : results.search2,
         search2: isTrieveA ? results.search2 : results.search1,
       })
+      setIsLoading(false);
     }
     fetchData();
   }, [searchTerm, isTrieveA]);
@@ -205,6 +208,7 @@ function HNSearchComparisonView() {
             resultA={renderResults(results?.search1)}
             resultB={renderResults(results?.search2)}
             searchTerm={searchTerm}
+            loading={isLoading}
             skipQuery={skipQuery}
             logState={localLogState}
             isTrieveA={isTrieveA}
