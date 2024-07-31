@@ -21,10 +21,10 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.trieve.ai/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.trieve.ai/favicon-16x16.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta property="og:title" content="Trieve Search Comparison to Algolia"/>
-        <meta property="og:site_name" content="Trieve Search Comparison to Algolia"/>
+        <meta property="og:title" content="Algolia vs. Trieve Comparison Poll for HackerNews Search"/>
+        <meta property="og:site_name" content="Algolia vs. Trieve Comparison Poll for HackerNews Search"/>
         <meta property="og:url" content="https://hn-compare.trieve.ai"/>
-        <meta property="og:description" content="A detailed comparison between Trieve Search and Algolia"/>
+        <meta property="og:description" content="Blind poll comparing Algolia and Trieve for HackerNews Search"/>
         <meta property="og:type" content=""/>
         <meta property="og:image" content="https://cdn.trieve.ai/trieve-og.png"/>
         <script defer data-domain="hn-compare.trieve.ai" src="https://plausible.trieve.ai/js/script.js"></script>
