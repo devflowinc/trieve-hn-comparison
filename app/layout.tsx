@@ -27,7 +27,7 @@ export default function RootLayout({
         <meta property="og:description" content="A detailed comparison between Trieve Search and Algolia"/>
         <meta property="og:type" content=""/>
         <meta property="og:image" content="https://cdn.trieve.ai/trieve-og.png"/>
-        <script defer data-domain="search.trieve.ai" src="https://plausible.trieve.ai/js/script.js"></script>
+        <script defer data-domain="hn-compare.trieve.ai" src="https://plausible.trieve.ai/js/script.js"></script>
       </head>
       <body className={inter.className}>{children}</body>
     </html>
