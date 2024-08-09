@@ -71,6 +71,9 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
         Which search response do you prefer? Choose a result or use the buttons
         below to vote and try another query.
       </h2>
+      <h2 className="text-lg font-semibold text-center mb-4">
+        We are collecting data to improve our search results.
+      </h2>
       <div className="flex justify-center mt-4">
         <div className="inline-flex rounded overflow-hidden">
           <button

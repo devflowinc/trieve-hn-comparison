@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import {
   QueryClient,
   QueryClientProvider,
@@ -105,10 +105,15 @@ function HNSearchComparisonView() {
       setIsTrieveA(Math.random() < 0.5);
   }, [searchTerm]);
 
+  useEffect(() => {
+    getRandomQuery();
+  }, []);
+
 
   useEffect(() => {
     async function fetchData(searchTerm: string) {
       setIsLoading(true);
+       router.push(`?q=${searchTerm}`);
       let results = await searchBoth(searchTerm)
       setSearchResults({
         search1: isTrieveA ? results.search1 : results.search2,
@@ -117,7 +122,7 @@ function HNSearchComparisonView() {
       setIsLoading(false);
     }
     fetchData(searchTerm ?? "");
-  }, [searchTerm, isTrieveA]);
+  }, [searchTerm, isTrieveA, router]);
 
   const handlePreferenceSubmit = (formData: FormData) => {
     logAction(formData);  
