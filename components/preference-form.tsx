@@ -13,7 +13,6 @@ interface PreferenceFormProps {
   searchTerm: string;
   logState: LogState;
   isTrieveA: boolean;
-  skipQuery: () => void;
   loading: boolean;
   resultA: React.ReactNode;
   resultB: React.ReactNode;
@@ -28,7 +27,6 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
   searchTerm,
   logState,
   isTrieveA,
-  skipQuery,
   loading,
   resultA,
   resultB,
@@ -37,28 +35,11 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
   const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   
-  useEffect(() => {
-    if (fingerprint && searchTerm) {
-      const votedQueries: VotedQueries = JSON.parse(
-        localStorage.getItem("votedQueries") || "{}"
-      );
-      setHasVoted(votedQueries[fingerprint]?.includes(searchTerm) || false);
-    }
-  }, [fingerprint, searchTerm]);
 
   const onVote = (preference: Preference) => {
     if (hasVoted || !searchTerm || !fingerprint) return;
 
     setIsSubmitting(true);
-
-    const votedQueries: VotedQueries = JSON.parse(
-      localStorage.getItem("votedQueries") || "{}"
-    );
-    if (!votedQueries[fingerprint]) {
-      votedQueries[fingerprint] = [];
-    }
-    votedQueries[fingerprint].push(searchTerm);
-    localStorage.setItem("votedQueries", JSON.stringify(votedQueries));
 
     const winner =
       preference === "A"
@@ -101,7 +82,7 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
                 : "cursor-pointer"
             }`}
           >
-            A is better
+            I prefer A
           </button>
           <div className="w-px bg-white"></div>
           <button
@@ -113,19 +94,7 @@ const PreferenceForm: React.FC<PreferenceFormProps> = ({
                 : "cursor-pointer"
             }`}
           >
-            B is better
-          </button>
-          <div className="w-px bg-white"></div>
-          <button
-            onClick={() => skipQuery()}
-            disabled={hasVoted || isSubmitting}
-            className={`px-4 py-2 bg-[#ff6600] text-white hover:bg-[#ff8533] transition-colors duration-200 ${
-              hasVoted || isSubmitting
-                ? "opacity-50 cursor-not-allowed"
-                : "cursor-pointer"
-            }`}
-          >
-            Skip Query
+            I prefer B
           </button>
         </div>
       </div>

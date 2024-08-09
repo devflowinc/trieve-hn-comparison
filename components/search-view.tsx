@@ -70,7 +70,7 @@ const SearchResultItem: React.FC<{ result: SearchResult }> = ({ result }) => (
 
 
 function HNSearchComparisonView() {
-  const [searchTerm, setSearchTerm] = useQueryState("q", { defaultValue: "" });
+  const [searchTerm, setSearchTerm] = useState<string | null>(null);
   const [isTrieveA, setIsTrieveA] = useState<boolean>(Math.random() < 0.5);
   const [results, setSearchResults] = useState<SearchResults | null>(null);
   const [logState, logAction] = useFormState<LogState, FormData>(
@@ -89,24 +89,7 @@ function HNSearchComparisonView() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  useEffect(() => {
-    if (fingerprint) {
-      const votedQueries = JSON.parse(localStorage.getItem("votedQueries") || "{}");
-      setSubmittedQueries(votedQueries[fingerprint] || []);
-    }
-  }, [fingerprint]);
 
-  useEffect(() => {
-    if (!searchTerm && fingerprint) {
-      const availableQueries = queries.filter(q => !submittedQueries.includes(q));
-      if (availableQueries.length > 0) {
-        const randomQuery = availableQueries[Math.floor(Math.random() * availableQueries.length)];
-        router.push(`?q=${randomQuery}`);
-      } else {
-        setSearchTerm("all_voted");
-      }
-    }
-  }, [searchTerm, fingerprint, submittedQueries, router, setSearchTerm]);
 
   useEffect(() => {
     if (logState.message) {
@@ -124,7 +107,7 @@ function HNSearchComparisonView() {
 
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchData(searchTerm: string) {
       setIsLoading(true);
       let results = await searchBoth(searchTerm)
       setSearchResults({
@@ -133,44 +116,28 @@ function HNSearchComparisonView() {
       })
       setIsLoading(false);
     }
-    fetchData();
+    fetchData(searchTerm ?? "");
   }, [searchTerm, isTrieveA]);
 
   const handlePreferenceSubmit = (formData: FormData) => {
-    logAction(formData);
+    logAction(formData);  
+    setIsTrieveA(Math.random() < 0.5);
+  };
+
+  const getRandomQuery = () => {
     const availableQueries = queries.filter(q => !submittedQueries.includes(q));
     if (availableQueries.length > 0) {
       const randomQuery = availableQueries[Math.floor(Math.random() * availableQueries.length)];
-      const updatedQueries = [...submittedQueries, searchTerm];
-      const votedQueries = JSON.parse(localStorage.getItem("votedQueries") || "{}");
-      votedQueries[fingerprint] = updatedQueries;
-      localStorage.setItem("votedQueries", JSON.stringify(votedQueries));
+      const updatedQueries = [...submittedQueries, searchTerm ?? ""];
       setSubmittedQueries(updatedQueries);
       setIsTrieveA(Math.random() < 0.5);
-      setTimeout(() => {
-        router.push(`?q=${randomQuery}`);
-      }, 700);
+      setSearchTerm(randomQuery);
     } else {
       setSearchTerm("all_voted");
     }
   };
 
-  const skipQuery = () => {
-    const availableQueries = queries.filter(q => !submittedQueries.includes(q));
-    if (availableQueries.length > 0) {
-      const randomQuery = availableQueries[Math.floor(Math.random() * availableQueries.length)];
-      const updatedQueries = [...submittedQueries, searchTerm];
-      const votedQueries = JSON.parse(localStorage.getItem("votedQueries") || "{}");
-      votedQueries[fingerprint] = updatedQueries;
-      localStorage.setItem("votedQueries", JSON.stringify(votedQueries));
-      setSubmittedQueries(updatedQueries);
-      setTimeout(() => {
-        router.push(`?q=${randomQuery}`);
-      }, 700);
-    } else {
-      setSearchTerm("all_voted");
-    }
-  };
+
 
   const renderResults = (results: SearchResult[] | undefined) => {
     if (!results || results.length === 0)
@@ -191,11 +158,17 @@ function HNSearchComparisonView() {
           <Input
             type="search"
             placeholder="Search"
-            disabled={true}
-            value={searchTerm === "all_voted" ? "" : searchTerm}
+            disabled={false}
+            value={searchTerm ?? ""}
             onChange={(e) => setSearchTerm(e.target.value || null)}
             className="bg-white border border-[#828282]"
           />
+          <button
+            onClick={() => getRandomQuery()}
+            className="bg-[#ff6600] text-white p-2 min-w-fit rounded-md"
+          >
+            Random Query
+          </button>
         </div>
         {searchTerm === "all_voted" && (
           <div className="text-center text-lg mb-4">
@@ -209,7 +182,6 @@ function HNSearchComparisonView() {
             resultB={renderResults(results?.search2)}
             searchTerm={searchTerm}
             loading={isLoading}
-            skipQuery={skipQuery}
             logState={localLogState}
             isTrieveA={isTrieveA}
           />
