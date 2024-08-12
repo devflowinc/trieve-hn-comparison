@@ -59,15 +59,11 @@ const SearchResultItem: React.FC<{ result: SearchResult }> = ({ result }) => (
           {new Date(result.created_at).toLocaleString()}
         </span>
         <span className="px-1">|</span>
-        <div>
-          {result.num_comments} comments
-        </div>
+        <div>{result.num_comments} comments</div>
       </div>
     </div>
   </div>
 );
-
-
 
 function HNSearchComparisonView() {
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
@@ -89,8 +85,6 @@ function HNSearchComparisonView() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
-
-
   useEffect(() => {
     if (logState.message) {
       setLocalLogState(logState);
@@ -102,37 +96,39 @@ function HNSearchComparisonView() {
   }, [searchTerm]);
 
   useEffect(() => {
-      setIsTrieveA(Math.random() < 0.5);
+    setIsTrieveA(Math.random() < 0.5);
   }, [searchTerm]);
 
   useEffect(() => {
     getRandomQuery();
   }, []);
 
-
   useEffect(() => {
     async function fetchData(searchTerm: string) {
       setIsLoading(true);
-       router.push(`?q=${searchTerm}`);
-      let results = await searchBoth(searchTerm)
+      router.push(`?q=${searchTerm}`);
+      let results = await searchBoth(searchTerm);
       setSearchResults({
         search1: isTrieveA ? results.search1 : results.search2,
         search2: isTrieveA ? results.search2 : results.search1,
-      })
+      });
       setIsLoading(false);
     }
     fetchData(searchTerm ?? "");
   }, [searchTerm, isTrieveA, router]);
 
   const handlePreferenceSubmit = (formData: FormData) => {
-    logAction(formData);  
+    logAction(formData);
     setIsTrieveA(Math.random() < 0.5);
   };
 
   const getRandomQuery = () => {
-    const availableQueries = queries.filter(q => !submittedQueries.includes(q));
+    const availableQueries = queries.filter(
+      (q) => !submittedQueries.includes(q)
+    );
     if (availableQueries.length > 0) {
-      const randomQuery = availableQueries[Math.floor(Math.random() * availableQueries.length)];
+      const randomQuery =
+        availableQueries[Math.floor(Math.random() * availableQueries.length)];
       const updatedQueries = [...submittedQueries, searchTerm ?? ""];
       setSubmittedQueries(updatedQueries);
       setIsTrieveA(Math.random() < 0.5);
@@ -141,8 +137,6 @@ function HNSearchComparisonView() {
       setSearchTerm("all_voted");
     }
   };
-
-
 
   const renderResults = (results: SearchResult[] | undefined) => {
     if (!results || results.length === 0)
@@ -156,7 +150,7 @@ function HNSearchComparisonView() {
   return (
     <div className="container mx-auto p-4 max-w-6xl bg-[#f6f6ef]">
       <h1 className="text-2xl font-bold mb-6 text-[#ff6600]">
-        Search Engine Comparison
+        HackerNews Blind Relevance Strategy Comparison Poll
       </h1>
       <div className="mb-8">
         <div className="flex items-center space-x-2 mb-4">

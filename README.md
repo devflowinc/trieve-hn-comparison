@@ -1,10 +1,10 @@
-# Hacker News Search Engine Comparison
+# HackerNews Blind Relevance Strategy Comparison Poll
 
 This project is a web application that compares search results from two different search engines (Trieve and Algolia) for Hacker News content. Users can perform searches, view results side by side, and log their preferences between the two search engines.
 
 ## Features
 
-- Dual search engine comparison (Trieve vs Algolia)
+- Dual search engine comparison
 - Side-by-side result display
 - User preference logging to PostgreSQL database
 - Server Actions for backend operations
